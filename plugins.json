@@ -13,6 +13,26 @@
       "guideUrl": "https://raw.githubusercontent.com/philomelch/bpsr-stellar-philo-registry/main/plugins/philo-lens/guide.md",
       "versions": [
         {
+          "version": "1.2.0",
+          "date": "2026-09-27",
+          "dll": "Stellar.PhiloLens.dll",
+          "dllUrl": "https://github.com/philomelch/bpsr-philo-lens/releases/download/v1.2.0/Stellar.PhiloLens.dll",
+          "sha256": "d2606e696ef3cad515bacbefe8028c871f8bbea8ce826c1988ac2b67b217bf7c",
+          "minModSystemVersion": "2.11.0",
+          "maxModSystemVersion": null,
+          "sourceRepository": "https://github.com/philomelch/bpsr-philo-lens.git",
+          "sourceCommit": "a7381182569389be720dfe1daeadd0bddf1d1e2b",
+          "sourceTag": "v1.2.0",
+          "changelog": {
+            "added": [],
+            "changed": [
+              "The Lens window now opens near the middle of the screen, and you can drag it by its title bar to wherever you like. It remembers where you put it."
+            ],
+            "fixed": [],
+            "removed": []
+          }
+        },
+        {
           "version": "1.1.0",
           "date": "2026-09-27",
           "dll": "Stellar.PhiloLens.dll",
