@@ -1,0 +1,12 @@
+<Project>
+  <!-- The ONLY place package versions are set. Every entry here was vetted with the workspace
+       `dependency-review` skill; re-review before changing any version. The builder itself uses
+       the BCL only; these are test-only. -->
+  <ItemGroup Label="Tests only">
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
+    <!-- xunit 2.x: "Legacy" (security fixes only) but no telemetry and half the graph of xunit.v3.
+         Same decision as the plugin template (2026-09-18). -->
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
+  </ItemGroup>
+</Project>

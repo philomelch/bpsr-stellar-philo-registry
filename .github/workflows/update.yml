@@ -1,0 +1,100 @@
+name: update-registry
+# Rebuilds plugins.json from the GitHub Releases of every repo in sources.json, and commits it to the
+# `registry` branch if anything changed. `main` holds only the inputs (sources.json, plugins/<id>/,
+# the builder), so it can be PR-only with no exception for this workflow. Players' launchers read:
+#   https://raw.githubusercontent.com/philomelch/bpsr-stellar-philo-registry/registry/plugins.json
+# A release in a plugin repo shows up there on the next hourly run, or immediately via
+# "Run workflow" (workflow_dispatch) in the Actions tab.
+on:
+  schedule:
+    - cron: "30 * * * *" # hourly at :30, away from the top of the hour when GitHub's scheduler is busiest
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["sources.json", "plugins/**", "src/**", ".github/workflows/update.yml"]
+  pull_request:
+
+permissions:
+  contents: read
+
+# One update at a time, so two runs can't race to commit plugins.json.
+concurrency:
+  group: registry
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      # Actions are pinned to full commit SHAs (tags are mutable). Review before bumping.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: "8.0.x"
+      - name: Coding standards
+        run: bash tools/check-standards.sh
+      - run: dotnet restore --locked-mode
+      - run: dotnet build --no-restore -c Release
+      - run: dotnet test --no-build -c Release
+
+      # On a PR, run the full update against a scratch copy of the published file: checks sources.json,
+      # the guide and media files, and every listed release before merge. Nothing is published.
+      - name: Dry-run the registry update
+        if: github.event_name == 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ github.token }} # read-only here: raises the GitHub API rate limit
+        run: |
+          if git fetch --depth=1 origin registry; then
+            git show FETCH_HEAD:plugins.json > "$RUNNER_TEMP/plugins.json"
+          fi
+          dotnet run --project src/RegistryBuilder --no-build -c Release -- sources.json "$RUNNER_TEMP/plugins.json"
+
+  update:
+    needs: test
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # push the regenerated plugins.json to the registry branch; nothing else
+    steps:
+      # Credentials persist in this job only because it must push. So it builds only the builder,
+      # which has no package references: no third-party build code runs next to them (the test
+      # project's packages are restored and built only in the credential-free test job).
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: "8.0.x"
+      - run: dotnet restore --locked-mode src/RegistryBuilder
+      - run: dotnet build --no-restore -c Release src/RegistryBuilder
+
+      # The published branch, checked out next to main. The very first run starts it empty (orphan). If
+      # the branch exists but can't be read, the push below is refused as non-fast-forward: fails closed.
+      - name: Check out the registry branch
+        run: |
+          if git ls-remote --exit-code --heads origin registry > /dev/null; then
+            git fetch --depth=1 origin registry
+            git worktree add --detach published FETCH_HEAD
+          else
+            git worktree add --detach published HEAD
+            git -C published checkout --orphan registry
+            git -C published rm -rfq .
+          fi
+
+      - name: Rebuild plugins.json
+        env:
+          GITHUB_TOKEN: ${{ github.token }} # only read with: raises the GitHub API rate limit
+        run: dotnet run --project src/RegistryBuilder --no-build -c Release -- sources.json published/plugins.json
+
+      - name: Commit if changed
+        working-directory: published
+        run: |
+          git add plugins.json
+          if git diff --cached --quiet; then
+            echo "No changes."
+            exit 0
+          fi
+          git -c user.name="github-actions[bot]" \
+              -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -m "registry: update plugins.json"
+          git push origin HEAD:refs/heads/registry

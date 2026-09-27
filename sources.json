@@ -1,0 +1,6 @@
+{
+  "publicUrl": "https://raw.githubusercontent.com/philomelch/bpsr-stellar-philo-registry/main/",
+  "plugins": [
+    { "id": "philo-lens", "repository": "philomelch/bpsr-philo-lens", "guide": "guide.md" }
+  ]
+}
