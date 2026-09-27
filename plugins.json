@@ -1,0 +1,64 @@
+{
+  "plugins": [
+    {
+      "id": "philo-lens",
+      "name": "Philo Lens",
+      "description": "Check nearby player\u0027s spec, AS/IBS, equipped Imagines, food/serum buffs, etc. from profile card.",
+      "author": "philomelch",
+      "tags": [
+        "inspect",
+        "social"
+      ],
+      "homepage": "https://github.com/philomelch/bpsr-philo-lens",
+      "guideUrl": "https://raw.githubusercontent.com/philomelch/bpsr-stellar-philo-registry/main/plugins/philo-lens/guide.md",
+      "versions": [
+        {
+          "version": "1.1.0",
+          "date": "2026-09-27",
+          "dll": "Stellar.PhiloLens.dll",
+          "dllUrl": "https://github.com/philomelch/bpsr-philo-lens/releases/download/v1.1.0/Stellar.PhiloLens.dll",
+          "sha256": "ed5fa1265de75486c31a02abac317e153d5b9f70f6b16584b296e24a53fb0581",
+          "minModSystemVersion": "2.11.0",
+          "maxModSystemVersion": null,
+          "sourceRepository": "https://github.com/philomelch/bpsr-philo-lens.git",
+          "sourceCommit": "604e8efedb4b8bb901a11db8fc8918e4b7582e07",
+          "sourceTag": "v1.1.0",
+          "changelog": {
+            "added": [
+              "Food and potion buffs, with their effect and a countdown of the time left."
+            ],
+            "changed": [],
+            "fixed": [],
+            "removed": []
+          }
+        },
+        {
+          "version": "1.0.0",
+          "date": "2026-09-27",
+          "dll": "Stellar.PhiloLens.dll",
+          "dllUrl": "https://github.com/philomelch/bpsr-philo-lens/releases/download/v1.0.0/Stellar.PhiloLens.dll",
+          "sha256": "780a3a67adb2c1844a293db40943009ed31f1b3350d576e8df866ea3051e5830",
+          "minModSystemVersion": "2.11.0",
+          "maxModSystemVersion": null,
+          "sourceRepository": "https://github.com/philomelch/bpsr-philo-lens.git",
+          "sourceCommit": "4f33dc744553fad181eaefe528789afcc7555d03",
+          "sourceTag": "v1.0.0",
+          "changelog": {
+            "added": [
+              "A **Lens** button on other players\u0027 profile cards that shows their class and spec.",
+              "Spec is read from the player\u0027s talents as soon as they come into range, even in town.",
+              "For players out of range, spec comes from skills they used in your zone; otherwise their class is shown.",
+              "The window closes together with the profile card.",
+              "Ability Score and the season strength stat, named as the game names it this season.",
+              "Equipped Battle Imagines by the name players use, with their tier.",
+              "The season-talent board a player runs, titled with the game\u0027s own name for the system."
+            ],
+            "changed": [],
+            "fixed": [],
+            "removed": []
+          }
+        }
+      ]
+    }
+  ]
+}
