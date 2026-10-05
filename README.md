@@ -10,11 +10,15 @@ plugins for *Blue Protocol: Star Resonance*, in the launcher's registry format
 
 ## For players
 
-In the Stellar launcher, add this URL as a plugin source:
+In the Stellar launcher's settings, add this under **Plugin Sources** (including `https://`):
 
 ```
-https://raw.githubusercontent.com/philomelch/bpsr-stellar-philo-registry/registry/plugins.json
+https://stellar-plugins.philomel.dev
 ```
+
+It redirects to the published file,
+`https://raw.githubusercontent.com/philomelch/bpsr-stellar-philo-registry/registry/plugins.json`,
+which also works as a source directly.
 
 ## How it works
 
